@@ -19,14 +19,14 @@ public final class DriveUtil {
      *
      * @param drive    forward/back (+ = forward), typically left stick Y (remember to negate gamepad Y)
      * @param strafe   left/right   (+ = right),   typically left stick X
-     * @param turn     rotation     (+ = clockwise), typically right stick X
+     * @param rotate     rotation     (+ = clockwise), typically right stick X
      * @return array {frontLeft, frontRight, backLeft, backRight}, each scaled to [-1, 1]
      */
-    public static double[] mecanum(double drive, double strafe, double turn) {
-        double frontLeft  = drive + strafe + turn;
-        double frontRight = drive - strafe - turn;
-        double backLeft   = drive - strafe + turn;
-        double backRight  = drive + strafe - turn;
+    public static double[] mecanum(double drive, double strafe, double rotate) {
+        double frontLeft  = drive + strafe + rotate;
+        double frontRight = drive - strafe - rotate;
+        double backLeft   = drive - strafe + rotate;
+        double backRight  = drive + strafe - rotate;
         return normalize(new double[]{frontLeft, frontRight, backLeft, backRight});
     }
 
@@ -37,17 +37,17 @@ public final class DriveUtil {
      *
      * @param drive        forward/back relative to the driver (+ = away)
      * @param strafe       left/right relative to the driver (+ = right)
-     * @param turn         rotation (+ = clockwise)
+     * @param rotate         rotation (+ = clockwise)
      * @param headingRad   robot heading in radians (e.g. from the IMU)
      */
     public static double[] mecanumFieldCentric(double drive, double strafe,
-                                               double turn, double headingRad) {
+                                               double rotate, double headingRad) {
         // Rotate the translation vector by -heading into the robot frame.
         double cos = Math.cos(-headingRad);
         double sin = Math.sin(-headingRad);
         double rotStrafe = strafe * cos - drive * sin;
         double rotDrive  = strafe * sin + drive * cos;
-        return mecanum(rotDrive, rotStrafe, turn);
+        return mecanum(rotDrive, rotStrafe, rotate);
     }
 
     /**
@@ -55,9 +55,9 @@ public final class DriveUtil {
      *
      * @return array {frontLeft, frontRight, backLeft, backRight}
      */
-    public static double[] arcade(double drive, double turn) {
-        double left  = drive + turn;
-        double right = drive - turn;
+    public static double[] arcade(double drive, double rotate) {
+        double left  = drive + rotate;
+        double right = drive - rotate;
         return normalize(new double[]{left, right, left, right});
     }
 
